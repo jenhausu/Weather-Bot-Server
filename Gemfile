@@ -3,3 +3,5 @@
 source "https://rubygems.org"
 
 gem 'telegram-bot-ruby'
+gem 'simple-rss'
+gem 'Nokogiri'
