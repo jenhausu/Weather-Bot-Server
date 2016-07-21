@@ -2,9 +2,29 @@ require 'simple-rss'
 require 'open-uri'
 require 'nokogiri'
 
+require './model.rb'
+
 
 class FetchData
-    def rss url
+    def languageChoice
+        lan = Language.new
+        case lan.choice
+        when "English"
+            url = 'http://rss.weather.gov.hk/rss/CurrentWeather.xml'
+        when "繁體中文"
+            url = 'http://rss.weather.gov.hk/rss/CurrentWeather_uc.xml'
+        when "简体中文"
+            url = 'http://gbrss.weather.gov.hk/rss/CurrentWeather_uc.xml'
+        end
+
+        return url
+    end
+
+    def fetchNewData
+      #code
+    end
+
+    def rss FetchData.new.languageChoice
         rss = SimpleRSS.parse open url
         return rss.items.first.description
     end
