@@ -1,4 +1,6 @@
 require 'telegram/bot'
+require './parse.rb'
+
 
 token = '240556961:AAEP-A47vhju8Vy3P7C7vZZTdGseOpdmY9I'
 
@@ -8,15 +10,20 @@ Telegram::Bot::Client.run(token) do |bot|
     case message
     when Telegram::Bot::Types::Message
         case message.text
+
         when '/current_status'
             bot.api.send_message(chat_id: message.chat.id, text: "Below is your current weather:")
-
         when '/subscribe'
-            kb = [
-                Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Hong Kong', callback_data: 'Hong Kong Weather'),
-            ]
-            markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
-            bot.api.send_message(chat_id: message.chat.id, text: 'Which location do you want to subscribe?', reply_markup: markup)
+            f = FetchData.new
+            location = f.nokogiri(f.rss('http://rss.weather.gov.hk/rss/CurrentWeather_uc.xml'), "weather", "location")
+            kb = []
+
+            location.count.times { |index|
+                kb << Telegram::Bot::Types::KeyboardButton.new(text:(index + 1).to_s + ". " + location[index])
+            }
+
+            markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb, one_time_keyboard: true, resize_keyboard: true)
+            bot.api.send_message(chat_id: message.chat.id, text: "Here are " + location.count.to_s + " locations you can subscribe.", reply_markup: markup)
         when '/unsubscribe'
             bot.api.send_message(chat_id: message.chat.id, text: "unsubscribe")
         when '/繁體中文'
@@ -26,14 +33,7 @@ Telegram::Bot::Client.run(token) do |bot|
         when '/English'
             bot.api.send_message(chat_id: message.chat.id, text: "English")
         else
-            bot.api.send_message(chat_id: message.chat.id, text: "I don't understand what \"" + message.text +  "\"......")
-        end
-
-
-    when Telegram::Bot::Types::CallbackQuery
-        # Here you can handle your callbacks from inline buttons
-        if message.data == 'Hong Kong Weather'
-            bot.api.send_message(chat_id: message.from.id, text: "The weather in Hong Kong is ")
+            bot.api.send_message(chat_id: message.chat.id, text: "I don't understand what \"" + message.text +  "\" mean ......")
         end
     end
   end
