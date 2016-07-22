@@ -16,4 +16,14 @@ class Model
         s = SubscribeClass.new
         s.add(user, location)
     end
+
+    def unsubscribe_show user
+        s = SubscribeClass.new
+        return s.read(user)
+    end
+
+    def unsubscribe user, location
+        s = SubscribeClass.new
+        s.delete(user, location)
+    end
 end
