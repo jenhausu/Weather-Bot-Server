@@ -33,9 +33,12 @@ Telegram::Bot::Client.run(token) do |bot|
         when '/subscribe'
             kb = []
             location = m.fetchNewData("location")
+            c = ["Hong Kong Observatory", "King's Park", "Wong Chuk Hang", "Ta Kwu Ling", "Lau Fau Shan", "Tai Po", "Sha Tin", "Tuen Mun", "Tseung Kwan O", "Sai Kung",
+                            "Cheung Chau", "Chek Lap Kok", "Tsing Yi", "Shek Kong", "Tsuen Wan Ho Koon", "Tsuen Wan Shing Mun Valley", "Hong Kong Park", "Shau Kei Wan",
+                             "Kowloon City", "Happy Valley", "Wong Tai Sin", "Stanley", "Kwun Tong", "Sham Shui Po", "Kai Tak Runway Park", "Yuen Long Park"]
 
             location.each_with_index { |item, index|
-                kb << Telegram::Bot::Types::InlineKeyboardButton.new(text:(index + 1).to_s + ". " + item, callback_data: "s" + item)
+                kb << Telegram::Bot::Types::InlineKeyboardButton.new(text:(index + 1).to_s + ". " + item, callback_data: "s" + c[index])
             }
 
             markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb, one_time_keyboard: true)
@@ -56,7 +59,8 @@ Telegram::Bot::Client.run(token) do |bot|
         end
     when Telegram::Bot::Types::CallbackQuery
         if message.data.first == "s"
-            bot.api.send_message(chat_id: message.from.id, text: "Subscribe " + message.data[1..message.data.length-1] + " successfuly!")
+            m.subscribe(message.from.id.to_s, message.data[1..message.data.length-1])
+            bot.api.send_message(chat_id: message.from.id, text: "Subscribe successfuly!")
         end
     end
   end
