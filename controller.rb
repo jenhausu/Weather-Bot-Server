@@ -11,9 +11,15 @@ Telegram::Bot::Client.run(token) do |bot|
     case message
     when Telegram::Bot::Types::Message
         case message.text
+        when '/current_weather'
+            location = m.fetchNewData("location")
+            degrees = m.fetchNewData("degrees")
+            t = ""
 
-        when '/current_status'
-            bot.api.send_message(chat_id: message.chat.id, text: "Below is your current weather:")
+            location.count.times { |index|
+                t += location[index] + ": " + degrees[index] + " ˚C\n"
+            }
+            bot.api.send_message(chat_id: message.chat.id, text: t)
         when '/subscribe'
             f = FetchData.new
             location = f.nokogiri(f.rss('http://rss.weather.gov.hk/rss/CurrentWeather_uc.xml'), "weather", "location")
