@@ -2,6 +2,8 @@
 # A sample Gemfile
 source "https://rubygems.org"
 
+ruby '2.3.1'
+
 gem 'telegram-bot-ruby'
 gem 'simple-rss'
-gem 'Nokogiri'
+gem 'nokogiri'
