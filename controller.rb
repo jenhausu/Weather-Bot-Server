@@ -11,6 +11,16 @@ Telegram::Bot::Client.run(token) do |bot|
     case message
     when Telegram::Bot::Types::Message
         case message.text
+        when '/start'
+            t = "Here are the commands you can use:\n"
+            t += "/current_weather - Watch the current weather status.\n"
+            t += "/subscribe - subscribe weather\n"
+            t += "/unsubscribe -  unsubscribe weather\n"
+            t += "/繁體中文 -  轉換資料的語言為繁體中文\n"
+            t += "/简体中文 - 转换资料的语言为简体中文\n"
+            t += "/English - change the data’s language to English"
+
+            bot.api.send_message(chat_id: message.chat.id, text: t)
         when '/current_weather'
             location = m.fetchNewData("location")
             degrees = m.fetchNewData("degrees")
