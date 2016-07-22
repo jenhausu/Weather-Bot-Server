@@ -4,6 +4,7 @@ require './DB/model.rb'
 
 token = '240556961:AAEP-A47vhju8Vy3P7C7vZZTdGseOpdmY9I'
 
+m = Model.new
 
 Telegram::Bot::Client.run(token) do |bot|
   bot.listen do |message|
@@ -27,11 +28,14 @@ Telegram::Bot::Client.run(token) do |bot|
         when '/unsubscribe'
             bot.api.send_message(chat_id: message.chat.id, text: "unsubscribe")
         when '/繁體中文'
-            bot.api.send_message(chat_id: message.chat.id, text: "繁體中文")
+            m.changeLanguage("繁體中文")
+            bot.api.send_message(chat_id: message.chat.id, text: "已經將資料切換成繁體中文。")
         when '/简体中文'
-            bot.api.send_message(chat_id: message.chat.id, text: "简体中文")
+            m.changeLanguage("简体中文")
+            bot.api.send_message(chat_id: message.chat.id, text: "已经将资料切换成简体中文。")
         when '/English'
-            bot.api.send_message(chat_id: message.chat.id, text: "English")
+            m.changeLanguage("English")
+            bot.api.send_message(chat_id: message.chat.id, text: "Already change the data's language to English.")
         else
             bot.api.send_message(chat_id: message.chat.id, text: "I don't understand what \"" + message.text +  "\" mean ......")
         end
