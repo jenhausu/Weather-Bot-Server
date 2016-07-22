@@ -6,4 +6,9 @@ class Model
         a = f.nokogiri(f.rss, "weather", datatype)
         return a
     end
+
+    def changeLanguage language
+        l = Language.new
+        l.update(language)
+    end
 end

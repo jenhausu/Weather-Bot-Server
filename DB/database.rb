@@ -7,22 +7,27 @@ require './DB/connect_database.rb'
 
 class Language < ActiveRecord::Base
     self.table_name = "language_table"
-    def choice # read
+    def choice
         l = Language.first
         if l
-            return l[language]
+            return l.language
         else
             return "English"
         end
     end
 
-    def update
+    def update c
         l = Language.first
-        l = Language.update(a)
-        l.save!
+        if l
+            l.language = c
+            l.save!
+        else
+            l = Language.new(language: "#{c}")
+            l.save!
+        end
+
     end
 end
-
 
 class Weather < ActiveRecord::Base
   self.table_name = "weather_table"
