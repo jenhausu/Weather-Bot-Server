@@ -65,6 +65,15 @@ class Weather < ActiveRecord::Base
     end
 end
 
+class SubscribeClass < ActiveRecord::Base
+    self.table_name = "subscribe_table"
+    def add user, location
+        s = SubscribeClass.new(user: user, location: location)
+        s.save!
+    end
+end
+
+
 
 class FetchDataClass
     def languageChoice
