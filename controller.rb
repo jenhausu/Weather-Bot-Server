@@ -1,5 +1,5 @@
 require 'telegram/bot'
-require './parse.rb'
+require './DB/model.rb'
 
 
 token = '240556961:AAEP-A47vhju8Vy3P7C7vZZTdGseOpdmY9I'
