@@ -76,6 +76,11 @@ class SubscribeClass < ActiveRecord::Base
         s = SubscribeClass.where(user: user)
         return s
     end
+    
+    def delete user, location
+        s = SubscribeClass.find_by(user: user, location: location)
+        s.destroy
+    end
 end
 
 class FetchDataClass
