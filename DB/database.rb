@@ -29,42 +29,6 @@ class Language < ActiveRecord::Base
     end
 end
 
-class Weather < ActiveRecord::Base
-  self.table_name = "weather_table"
-    def decideUpdateOrNot
-
-    end
-
-    def fetchNewData
-        f = FetchDataClass.new
-
-        loca = f.nokogiri(f.rss, "weather", "location")
-        degre = f.nokogiri(f.rss, "weather", "degrees")
-        a = {}
-
-        loca.each_with_index { |item, index|
-            next if loca[index] == "King's Park"
-            a[loca[index]] = degre[index]
-        }
-        return a
-    end
-
-    def create a
-        w = Weather.new(a)
-        w.save!
-    end
-
-    def update a
-        w = Weather.first
-        w = Weather.update(a)
-        w.save!
-    end
-
-    def read
-
-    end
-end
-
 class SubscribeClass < ActiveRecord::Base
     self.table_name = "subscribe_table"
     def add user, location
@@ -76,7 +40,7 @@ class SubscribeClass < ActiveRecord::Base
         s = SubscribeClass.where(user: user)
         return s
     end
-    
+
     def delete user, location
         s = SubscribeClass.find_by(user: user, location: location)
         s.destroy
