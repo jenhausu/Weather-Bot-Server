@@ -44,7 +44,15 @@ Telegram::Bot::Client.run(token) do |bot|
             markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb, one_time_keyboard: true)
             bot.api.send_message(chat_id: message.chat.id, text: "Here are " + location.count.to_s + " locations you can subscribe.", reply_markup: markup)
         when '/unsubscribe'
-            bot.api.send_message(chat_id: message.chat.id, text: "unsubscribe")
+            kb = []
+            l = m.unsubscribe_show(message.chat.id)
+
+            l.each_with_index { |item, index|
+                kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: (index + 1).to_s + ". " + l[index].location, callback_data: "u" + l[index].location)
+            }
+
+            markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb, one_time_keyboard: true)
+            bot.api.send_message(chat_id: message.chat.id, text: "Here are " + l.count.to_s + " locations you have subscribe.", reply_markup: markup)
         when '/繁體中文'
             m.changeLanguage("繁體中文")
             bot.api.send_message(chat_id: message.chat.id, text: "已經將資料切換成繁體中文。")
