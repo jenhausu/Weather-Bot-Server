@@ -31,15 +31,14 @@ Telegram::Bot::Client.run(token) do |bot|
             }
             bot.api.send_message(chat_id: message.chat.id, text: t)
         when '/subscribe'
-            f = FetchData.new
-            location = f.nokogiri(f.rss('http://rss.weather.gov.hk/rss/CurrentWeather_uc.xml'), "weather", "location")
             kb = []
+            location = m.fetchNewData("location")
 
-            location.count.times { |index|
-                kb << Telegram::Bot::Types::KeyboardButton.new(text:(index + 1).to_s + ". " + location[index])
+            location.each_with_index { |item, index|
+                kb << Telegram::Bot::Types::InlineKeyboardButton.new(text:(index + 1).to_s + ". " + item, callback_data: "s" + item)
             }
 
-            markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: kb, one_time_keyboard: true, resize_keyboard: true)
+            markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb, one_time_keyboard: true)
             bot.api.send_message(chat_id: message.chat.id, text: "Here are " + location.count.to_s + " locations you can subscribe.", reply_markup: markup)
         when '/unsubscribe'
             bot.api.send_message(chat_id: message.chat.id, text: "unsubscribe")
@@ -54,6 +53,10 @@ Telegram::Bot::Client.run(token) do |bot|
             bot.api.send_message(chat_id: message.chat.id, text: "Already change the data's language to English.")
         else
             bot.api.send_message(chat_id: message.chat.id, text: "I don't understand what \"" + message.text +  "\" mean ......")
+        end
+    when Telegram::Bot::Types::CallbackQuery
+        if message.data.first == "s"
+            bot.api.send_message(chat_id: message.from.id, text: "Subscribe " + message.data[1..message.data.length-1] + " successfuly!")
         end
     end
   end
