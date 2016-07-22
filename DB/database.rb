@@ -71,9 +71,12 @@ class SubscribeClass < ActiveRecord::Base
         s = SubscribeClass.new(user: user, location: location)
         s.save!
     end
+
+    def read user
+        s = SubscribeClass.where(user: user)
+        return s
+    end
 end
-
-
 
 class FetchDataClass
     def languageChoice
