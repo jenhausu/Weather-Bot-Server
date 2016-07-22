@@ -31,11 +31,10 @@ class Weather < ActiveRecord::Base
     end
 
     def fetchNewData
-        url = 'http://rss.weather.gov.hk/rss/CurrentWeather.xml'
-        f = FetchData.new
+        f = FetchDataClass.new
 
-        loca = f.nokogiri(f.rss(url), "weather", "location")
-        degre = f.nokogiri(f.rss(url), "weather", "degrees")
+        loca = f.nokogiri(f.rss, "weather", "location")
+        degre = f.nokogiri(f.rss, "weather", "degrees")
         a = {}
 
         loca.each_with_index { |item, index|
@@ -63,12 +62,6 @@ end
 
 
 class FetchDataClass
-    def fetchNewData datatype
-        f = FetchDataClass.new
-        a = f.nokogiri(f.rss, "weather", datatype)
-        return a
-    end
-
     def languageChoice
         lan = Language.new
         case lan.choice
