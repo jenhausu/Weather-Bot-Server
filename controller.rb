@@ -81,6 +81,7 @@ Telegram::Bot::Client.run(token) do |bot|
             bot.api.send_message(chat_id: message.chat.id, text: "I don't understand what \"" + message.text +  "\" mean ......")
         end
     when Telegram::Bot::Types::CallbackQuery
+        scheduler.pause
         if message.data.first == "s"
             m.subscribe_add(message.from.id.to_s, message.data[1..message.data.length-1])
             bot.api.send_message(chat_id: message.from.id, text: "Subscribe successfuly!")
@@ -88,6 +89,7 @@ Telegram::Bot::Client.run(token) do |bot|
             m.unsubscribe(message.from.id, message.data[1..message.data.length-1])
             bot.api.send_message(chat_id: message.from.id, text: "Unsubscribe successfuly!")
         end
+        scheduler.resume
     end
   end
 end
