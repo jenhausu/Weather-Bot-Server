@@ -9,17 +9,18 @@ m = Model.new
 scheduler = Rufus::Scheduler.new
 
 Telegram::Bot::Client.run(token) do |bot|
-    scheduler.every '2h' do
-        t = ""
-        user_id = 266403270
-        a = m.subscribed_push(user_id)
+    scheduler.every '15s' do
+        u = m.subscribe_ShowAllUser
 
-        if a.count > 0
+        u.each { |user_id|
+            t = ""
+            a = m.subscribed_push(user_id)
+
             a.each { |key, value|
                 t += key.to_s + ": " + value.to_s + " ˚C\n"
             }
             bot.api.send_message(chat_id: user_id, text: t)
-        end
+        }
     end
 
   bot.listen do |message|
