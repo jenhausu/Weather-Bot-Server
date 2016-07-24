@@ -7,3 +7,5 @@ ruby '2.3.1'
 gem 'telegram-bot-ruby'
 gem 'simple-rss'
 gem 'nokogiri'
+
+gem 'rufus-scheduler'
