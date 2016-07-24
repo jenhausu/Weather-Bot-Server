@@ -12,7 +12,8 @@ class Model
         l.update(language)
     end
 
-    def subscribe user, location
+
+    def subscribe_add user, location
         s = SubscribeClass.new
         s.add(user, location)
     end

@@ -67,7 +67,7 @@ Telegram::Bot::Client.run(token) do |bot|
         end
     when Telegram::Bot::Types::CallbackQuery
         if message.data.first == "s"
-            m.subscribe(message.from.id.to_s, message.data[1..message.data.length-1])
+            m.subscribe_add(message.from.id.to_s, message.data[1..message.data.length-1])
             bot.api.send_message(chat_id: message.from.id, text: "Subscribe successfuly!")
         else
             m.unsubscribe(message.from.id, message.data[1..message.data.length-1])
