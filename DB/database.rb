@@ -41,6 +41,11 @@ class SubscribeClass < ActiveRecord::Base
         return s
     end
 
+    def read_all
+        s = SubscribeClass.all
+        return s
+    end
+
     def delete user, location
         s = SubscribeClass.find_by(user: user, location: location)
         s.destroy
