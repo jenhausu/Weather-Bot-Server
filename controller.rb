@@ -1,12 +1,27 @@
 require 'telegram/bot'
+require 'rufus-scheduler'
 require './DB/model.rb'
 
 
 token = '240556961:AAEP-A47vhju8Vy3P7C7vZZTdGseOpdmY9I'
 
 m = Model.new
+scheduler = Rufus::Scheduler.new
 
 Telegram::Bot::Client.run(token) do |bot|
+    scheduler.every '2h' do
+        t = ""
+        user_id = 266403270
+        a = m.subscribed_push(user_id)
+
+        if a.count > 0
+            a.each { |key, value|
+                t += key.to_s + ": " + value.to_s + " ˚C\n"
+            }
+            bot.api.send_message(chat_id: user_id, text: t)
+        end
+    end
+
   bot.listen do |message|
     case message
     when Telegram::Bot::Types::Message
