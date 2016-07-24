@@ -8,4 +8,7 @@ gem 'telegram-bot-ruby'
 gem 'simple-rss'
 gem 'nokogiri'
 
+gem 'mysql2'
+gem 'activerecord'
+
 gem 'rufus-scheduler'
