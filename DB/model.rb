@@ -1,5 +1,6 @@
 require './DB/database.rb'
 
+
 class Model
     def fetchNewData datatype
         f = FetchDataClass.new
@@ -26,5 +27,24 @@ class Model
     def unsubscribe user, location
         s = SubscribeClass.new
         s.delete(user, location)
+    end
+
+    def subscribed_push user
+        m = Model.new
+        l = m.fetchNewData("location")
+        d = m.fetchNewData("degrees")
+
+        s = m.subscribed_show(user)
+
+        h = {}
+        l.each_with_index { |item, index|
+            h[l[index]] = d[index]
+        }
+
+        a = {}
+        s.each_with_index { |item, index|
+            a[s[index].location] = h[s[index].location]
+        }
+        return a
     end
 end
