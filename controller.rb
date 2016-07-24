@@ -45,7 +45,7 @@ Telegram::Bot::Client.run(token) do |bot|
             bot.api.send_message(chat_id: message.chat.id, text: "Here are " + location.count.to_s + " locations you can subscribe.", reply_markup: markup)
         when '/unsubscribe'
             kb = []
-            l = m.unsubscribe_show(message.chat.id)
+            l = m.subscribed_show(message.chat.id)
 
             l.each_with_index { |item, index|
                 kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: (index + 1).to_s + ". " + l[index].location, callback_data: "u" + l[index].location)

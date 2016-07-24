@@ -18,7 +18,7 @@ class Model
         s.add(user, location)
     end
 
-    def unsubscribe_show user
+    def subscribed_show user
         s = SubscribeClass.new
         return s.read(user)
     end
