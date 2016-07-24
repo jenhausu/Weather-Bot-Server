@@ -29,6 +29,33 @@ class Model
         s.delete(user, location)
     end
 
+    def subscribe_ShowAllUser
+        s = SubscribeClass.new
+        all = s.read_all
+        a = []
+
+        if all.count > 0
+            lastUser = all[0].user
+            a[0] = all[0].user
+        end
+
+        all.each_with_index { |all_item, all_index|
+            if all[all_index].user != lastUser
+                a.each_with_index { |item, index|
+                    if item == all[all_index].user
+                        break
+                    end
+
+                    if index == (a.count - 1)
+                        a << all[all_index].user
+                        lastUser = all[all_index].user
+                    end
+                }
+            end
+        }
+        return a
+    end
+
     def subscribed_push user
         m = Model.new
         l = m.fetchNewData("location")
