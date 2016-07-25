@@ -41,8 +41,8 @@ Telegram::Bot::Client.run(token) do |bot|
 
             bot.api.send_message(chat_id: message.chat.id, text: t)
         when '/current_weather'
-            location = f.fetchNewData("location")
-            degrees = f.fetchNewData("degrees")
+            location = f.fetchNewData("weather", "location")
+            degrees = f.fetchNewData("weather", "degrees")
             t = ""
 
             location.count.times { |index|
