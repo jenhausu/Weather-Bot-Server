@@ -69,6 +69,11 @@ class Warning_Model
         w = Warning_Table.new
         w.add(user)
     end
+
+    def warning_unsubscribe user
+        w = Warning_Table.new
+        w.delete(user)
+    end
 end
 
 class FetchData_Model
