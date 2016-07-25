@@ -39,6 +39,10 @@ class Warning_Table < ActiveRecord::Base
         w = Warning_Table.find_by(user: user)
         w.destroy
     end
+    
+    def read
+        return Warning_Table.all
+    end
 end
 
 class ObserveWarning_Table < ActiveRecord::Base
