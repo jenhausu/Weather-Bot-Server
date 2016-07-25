@@ -43,6 +43,21 @@ end
 
 class ObserveWarning_Table < ActiveRecord::Base
     self.table_name = "observeWarning_table"
+    def update t
+        o = ObserveWarning_Table.all
+        
+        if o.count > 0
+            o = ObserveWarning_Table.first
+            o.dispatche_time = t
+            o.save!
+        else
+            o = ObserveWarning_Table.new(dispatche_time: t)
+            o.save!
+        end
+        
+        return o
+    end
+    
     def read
         return ObserveWarning_Table.all
     end
