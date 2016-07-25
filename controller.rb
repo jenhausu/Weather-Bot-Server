@@ -6,8 +6,9 @@ require './DB/model.rb'
 token = '240556961:AAEP-A47vhju8Vy3P7C7vZZTdGseOpdmY9I'
 
 f = FetchData_Model.new
-m = Model.new
 s = Subscribe_Model.new
+l = Language_Model.new
+
 scheduler = Rufus::Scheduler.new
 
 Telegram::Bot::Client.run(token) do |bot|
@@ -63,22 +64,22 @@ Telegram::Bot::Client.run(token) do |bot|
             bot.api.send_message(chat_id: message.chat.id, text: "Here are " + location.count.to_s + " locations you can subscribe.", reply_markup: markup)
         when '/unsubscribe'
             kb = []
-            l = s.subscribed_show(message.chat.id)
+            location = s.subscribed_show(message.chat.id)
 
-            l.each_with_index { |item, index|
-                kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: (index + 1).to_s + ". " + l[index].location, callback_data: "u" + l[index].location)
+            location.each_with_index { |item, index|
+                kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: (index + 1).to_s + ". " + location[index].location, callback_data: "u" + location[index].location)
             }
 
             markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb, one_time_keyboard: true)
-            bot.api.send_message(chat_id: message.chat.id, text: "Here are " + l.count.to_s + " locations you have subscribe.", reply_markup: markup)
+            bot.api.send_message(chat_id: message.chat.id, text: "Here are " + location.count.to_s + " locations you have subscribe.", reply_markup: markup)
         when '/繁體中文'
-            m.changeLanguage("繁體中文")
+            l.changeLanguage("繁體中文")
             bot.api.send_message(chat_id: message.chat.id, text: "已經將資料切換成繁體中文。")
         when '/简体中文'
-            m.changeLanguage("简体中文")
+            l.changeLanguage("简体中文")
             bot.api.send_message(chat_id: message.chat.id, text: "已经将资料切换成简体中文。")
         when '/English'
-            m.changeLanguage("English")
+            l.changeLanguage("English")
             bot.api.send_message(chat_id: message.chat.id, text: "Already change the data's language to English.")
         else
             bot.api.send_message(chat_id: message.chat.id, text: "I don't understand what \"" + message.text +  "\" mean ......")

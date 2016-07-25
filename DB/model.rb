@@ -1,7 +1,7 @@
 require './DB/database.rb'
 
 
-class Model
+class Language_Model
     def changeLanguage language
         l = Language.new
         l.update(language)
