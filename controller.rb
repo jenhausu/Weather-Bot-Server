@@ -15,7 +15,6 @@ scheduler = Rufus::Scheduler.new
 Telegram::Bot::Client.run(token) do |bot|
     scheduler.every '15s' do
         u = s.subscribe_ShowAllUser
-
         u.each { |user_id|
             t = ""
             a = s.subscribed_push(user_id)
@@ -25,6 +24,16 @@ Telegram::Bot::Client.run(token) do |bot|
             }
             bot.api.send_message(chat_id: user_id, text: t)
         }
+
+        if w.warning_change
+            u = w.warning_subscribed_user
+            u.each { |user_id|
+                a = w.fetchWarning
+                a.each { |item|
+                    bot.api.send_message(chat_id: user_id, text: item)
+                }
+            }
+        end
     end
 
   bot.listen do |message|
