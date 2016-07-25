@@ -41,6 +41,10 @@ class Warning_Table < ActiveRecord::Base
     end
 end
 
+class ObserveWarning_Table < ActiveRecord::Base
+    self.table_name = "observeWarning_table"
+end
+
 class Language < ActiveRecord::Base
     self.table_name = "language_table"
     def choice
