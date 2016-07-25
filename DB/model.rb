@@ -75,6 +75,14 @@ class Warning_Model
         w = Warning_Table.new
         w.delete(user)
     end
+
+    def fetchWarning
+        f = FetchData_Model.new
+        a = f.nokogiri("warning", "not need")
+
+    return a
+end
+
 end
 
 class FetchData_Model
