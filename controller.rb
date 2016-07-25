@@ -8,6 +8,7 @@ token = '240556961:AAEP-A47vhju8Vy3P7C7vZZTdGseOpdmY9I'
 f = FetchData_Model.new
 s = Subscribe_Model.new
 l = Language_Model.new
+w = Warning_Model.new
 
 scheduler = Rufus::Scheduler.new
 
@@ -49,6 +50,11 @@ Telegram::Bot::Client.run(token) do |bot|
                 t += location[index] + ": " + degrees[index] + " ˚C\n"
             }
             bot.api.send_message(chat_id: message.chat.id, text: t)
+        when '/current_warning'
+            a = w.fetchWarning
+            a.each { |item|
+                bot.api.send_message(chat_id: message.chat.id, text: item)
+            }
         when '/subscribe'
             kb = []
             location = f.fetchNewData("location")
