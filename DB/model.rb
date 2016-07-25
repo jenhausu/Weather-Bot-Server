@@ -80,9 +80,13 @@ class Warning_Model
         f = FetchData_Model.new
         a = f.nokogiri("warning", "not need")
 
-    return a
-end
-
+        return a
+    end
+    
+    def warning_push
+        w = Warning_Table.new
+        return w.read_all
+    end
 end
 
 class FetchData_Model
