@@ -30,6 +30,10 @@ end
 
 class Warning_Table < ActiveRecord::Base
     self.table_name = "warning_table"
+    def add user
+        w = Warning_Table.new(user: user)
+        w.save!
+    end
 end
 
 class Language < ActiveRecord::Base
