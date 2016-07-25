@@ -34,6 +34,11 @@ class Warning_Table < ActiveRecord::Base
         w = Warning_Table.new(user: user)
         w.save!
     end
+
+    def delete user
+        w = Warning_Table.find_by(user: user)
+        w.destroy
+    end
 end
 
 class Language < ActiveRecord::Base
