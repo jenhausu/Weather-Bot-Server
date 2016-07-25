@@ -6,15 +6,16 @@ require './DB/model.rb'
 token = '240556961:AAEP-A47vhju8Vy3P7C7vZZTdGseOpdmY9I'
 
 m = Model.new
+s = Subscribe_Model.new
 scheduler = Rufus::Scheduler.new
 
 Telegram::Bot::Client.run(token) do |bot|
     scheduler.every '15s' do
-        u = m.subscribe_ShowAllUser
+        u = s.subscribe_ShowAllUser
 
         u.each { |user_id|
             t = ""
-            a = m.subscribed_push(user_id)
+            a = s.subscribed_push(user_id)
 
             a.each { |key, value|
                 t += key.to_s + ": " + value.to_s + " ˚C\n"
@@ -61,7 +62,7 @@ Telegram::Bot::Client.run(token) do |bot|
             bot.api.send_message(chat_id: message.chat.id, text: "Here are " + location.count.to_s + " locations you can subscribe.", reply_markup: markup)
         when '/unsubscribe'
             kb = []
-            l = m.subscribed_show(message.chat.id)
+            l = s.subscribed_show(message.chat.id)
 
             l.each_with_index { |item, index|
                 kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: (index + 1).to_s + ". " + l[index].location, callback_data: "u" + l[index].location)
@@ -84,10 +85,10 @@ Telegram::Bot::Client.run(token) do |bot|
     when Telegram::Bot::Types::CallbackQuery
         scheduler.pause
         if message.data.first == "s"
-            m.subscribe_add(message.from.id.to_s, message.data[1..message.data.length-1])
+            s.subscribe_add(message.from.id.to_s, message.data[1..message.data.length-1])
             bot.api.send_message(chat_id: message.from.id, text: "Subscribe successfuly!")
         else
-            m.unsubscribe(message.from.id, message.data[1..message.data.length-1])
+            s.unsubscribe(message.from.id, message.data[1..message.data.length-1])
             bot.api.send_message(chat_id: message.from.id, text: "Unsubscribe successfuly!")
         end
         scheduler.resume

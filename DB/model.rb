@@ -3,7 +3,7 @@ require './DB/database.rb'
 
 class Model
     def fetchNewData datatype
-        f = FetchDataClass.new
+        f = FetchData_Model.new
         a = f.nokogiri(f.rss, "weather", datatype)
         return a
     end
@@ -12,8 +12,9 @@ class Model
         l = Language.new
         l.update(language)
     end
+end
 
-
+class Subscribe_Model
     def subscribe_add user, location
         s = Subscribe_Table.new
         s.add(user, location)
@@ -61,7 +62,7 @@ class Model
         l = m.fetchNewData("location")
         d = m.fetchNewData("degrees")
 
-        s = m.subscribed_show(user)
+        s = Subscribe_Model.new.subscribed_show(user)
 
         h = {}
         l.each_with_index { |item, index|
