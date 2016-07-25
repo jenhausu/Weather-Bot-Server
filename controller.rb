@@ -34,6 +34,7 @@ Telegram::Bot::Client.run(token) do |bot|
         when '/start'
             t = "Here are the commands you can use:\n"
             t += "/current_weather - Watch the current weather status.\n"
+            t += "/current_warning - Look at the weather warning.\n"
             t += "/subscribe - subscribe weather\n"
             t += "/unsubscribe -  unsubscribe weather\n"
             t += "/繁體中文 -  轉換資料的語言為繁體中文\n"
