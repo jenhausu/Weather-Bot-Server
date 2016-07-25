@@ -95,6 +95,17 @@ class Warning_Model
             return true
         end
     end
+
+    def warning_subscribed_user
+        w = Warning_Table.new
+        a = []
+
+        w.read.each { |item|
+            a << item.user
+        }
+
+        return a
+    end
 end
 
 class FetchData_Model
