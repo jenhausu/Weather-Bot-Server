@@ -1,36 +1,24 @@
 require './DB/database.rb'
 
 
-class Model
-    def fetchNewData datatype
-        f = FetchDataClass.new
-        a = f.nokogiri(f.rss, "weather", datatype)
-        return a
-    end
-
-    def changeLanguage language
-        l = Language.new
-        l.update(language)
-    end
-
-
+class Subscribe_Model
     def subscribe_add user, location
-        s = SubscribeClass.new
+        s = Subscribe_Table.new
         s.add(user, location)
     end
 
     def subscribed_show user
-        s = SubscribeClass.new
+        s = Subscribe_Table.new
         return s.read(user)
     end
 
     def unsubscribe user, location
-        s = SubscribeClass.new
+        s = Subscribe_Table.new
         s.delete(user, location)
     end
 
     def subscribe_ShowAllUser
-        s = SubscribeClass.new
+        s = Subscribe_Table.new
         all = s.read_all
         a = []
 
@@ -57,11 +45,11 @@ class Model
     end
 
     def subscribed_push user
-        m = Model.new
-        l = m.fetchNewData("location")
-        d = m.fetchNewData("degrees")
+        f = FetchData_Model.new
+        l = f.fetchNewData("location")
+        d = f.fetchNewData("degrees")
 
-        s = m.subscribed_show(user)
+        s = Subscribe_Model.new.subscribed_show(user)
 
         h = {}
         l.each_with_index { |item, index|
@@ -73,5 +61,68 @@ class Model
             a[s[index].location] = h[s[index].location]
         }
         return a
+    end
+end
+
+class FetchData_Model
+    def fetchNewData datatype
+        f = FetchData_Model.new
+        a = f.nokogiri(f.rss, "weather", datatype)
+        return a
+    end
+
+    def languageChoice
+        lan = Language.new
+        case lan.choice
+        when "English"
+            url = 'http://rss.weather.gov.hk/rss/CurrentWeather.xml'
+        when "繁體中文"
+            url = 'http://rss.weather.gov.hk/rss/CurrentWeather_uc.xml'
+        when "简体中文"
+            url = 'http://gbrss.weather.gov.hk/rss/CurrentWeather_uc.xml'
+        end
+        return url
+    end
+
+    def rss
+        f = FetchData_Model.new
+        url = f.languageChoice
+        rss = SimpleRSS.parse open url
+        return rss.items.first.description
+    end
+
+    def nokogiri description, dataTitle, dataType
+        if dataTitle == "weather"
+            html_doc = Nokogiri::HTML(description)
+            dataQuantity = ((html_doc.xpath("//table[1]/tr/td").count)/2)
+            a = []
+
+            if dataType == "location"
+                index = 0
+
+                dataQuantity.times {
+                    a << html_doc.xpath("//table[1]/tr/td")[index].text
+                    index += 2
+                }
+            elsif dataType == "degrees"
+                index = 1
+
+                dataQuantity.times {
+                    a << html_doc.xpath("//table[1]/tr/td")[index].text[0..1]
+                    index += 2
+                }
+            end
+
+            return a
+        elsif dataTitle == "warning"
+
+        end
+    end
+end
+
+class Language_Model
+    def changeLanguage language
+        l = Language.new
+        l.update(language)
     end
 end
