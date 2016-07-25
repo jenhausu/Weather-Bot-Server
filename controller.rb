@@ -15,7 +15,6 @@ scheduler = Rufus::Scheduler.new
 Telegram::Bot::Client.run(token) do |bot|
     scheduler.every '15s' do
         u = s.subscribe_ShowAllUser
-
         u.each { |user_id|
             t = ""
             a = s.subscribed_push(user_id)
@@ -24,7 +23,17 @@ Telegram::Bot::Client.run(token) do |bot|
                 t += key.to_s + ": " + value.to_s + " ˚C\n"
             }
             bot.api.send_message(chat_id: user_id, text: t)
-    }
+        }
+
+        if w.warning_change
+            u = w.warning_subscribed_user
+            u.each { |user_id|
+                a = w.fetchWarning
+                a.each { |item|
+                    bot.api.send_message(chat_id: user_id, text: item)
+                }
+            }
+        end
     end
 
   bot.listen do |message|
@@ -34,9 +43,11 @@ Telegram::Bot::Client.run(token) do |bot|
         when '/start'
             t = "Here are the commands you can use:\n"
             t += "/current_weather - Watch the current weather status.\n"
+            t += "/weather_subscribe - subscribe weather\n"
+            t += "/weather_unsubscribe -  unsubscribe weather\n"
             t += "/current_warning - Look at the weather warning.\n"
-            t += "/subscribe - subscribe weather\n"
-            t += "/unsubscribe -  unsubscribe weather\n"
+            t += "/warning_subscribe - subscribe warning\n"
+            t += "/warning_unsubscribe -  unsubscribe warning\n"
             t += "/繁體中文 -  轉換資料的語言為繁體中文\n"
             t += "/简体中文 - 转换资料的语言为简体中文\n"
             t += "/English - change the data’s language to English"
@@ -56,7 +67,7 @@ Telegram::Bot::Client.run(token) do |bot|
             a.each { |item|
                 bot.api.send_message(chat_id: message.chat.id, text: item)
             }
-        when '/subscribe'
+        when '/weather_subscribe'
             kb = []
             location = f.fetchNewData("location")
             c = ["Hong Kong Observatory", "King's Park", "Wong Chuk Hang", "Ta Kwu Ling", "Lau Fau Shan", "Tai Po", "Sha Tin", "Tuen Mun", "Tseung Kwan O", "Sai Kung",
@@ -69,7 +80,7 @@ Telegram::Bot::Client.run(token) do |bot|
 
             markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb, one_time_keyboard: true)
             bot.api.send_message(chat_id: message.chat.id, text: "Here are " + location.count.to_s + " locations you can subscribe.", reply_markup: markup)
-        when '/unsubscribe'
+        when '/weather_unsubscribe'
             kb = []
             location = s.subscribed_show(message.chat.id)
 
@@ -79,6 +90,12 @@ Telegram::Bot::Client.run(token) do |bot|
 
             markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb, one_time_keyboard: true)
             bot.api.send_message(chat_id: message.chat.id, text: "Here are " + location.count.to_s + " locations you have subscribe.", reply_markup: markup)
+        when '/warning_subscribe'
+            w.warning_subscribe(message.chat.id)
+            bot.api.send_message(chat_id: message.chat.id, text: "Subscribe warning successfuly")
+        when '/warning_unsubscribe'
+            w.warning_unsubscribe(message.chat.id)
+            bot.api.send_message(chat_id: message.chat.id, text: "Unubscribe warning successfuly")
         when '/繁體中文'
             l.changeLanguage("繁體中文")
             bot.api.send_message(chat_id: message.chat.id, text: "已經將資料切換成繁體中文。")

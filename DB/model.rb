@@ -80,9 +80,32 @@ class Warning_Model
         f = FetchData_Model.new
         a = f.nokogiri("warning", "not need")
 
-    return a
-end
+        return a
+    end
+    
+    def warning_change
+        w = Warning_Model.new
+        o = ObserveWarning_Table.new
+        
+        t = w.fetchWarning
+        if t.last.to_s == o.read[0].dispatche_time.to_s
+            return false
+        else
+            o.update(t.last)
+            return true
+        end
+    end
 
+    def warning_subscribed_user
+        w = Warning_Table.new
+        a = []
+
+        w.read.each { |item|
+            a << item.user
+        }
+
+        return a
+    end
 end
 
 class FetchData_Model
