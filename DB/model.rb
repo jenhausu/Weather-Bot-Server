@@ -65,7 +65,10 @@ class Subscribe_Model
 end
 
 class Warning_Model
-    
+    def warning_subscribe user
+        w = Warning_Table.new
+        w.add(user)
+    end
 end
 
 class FetchData_Model
