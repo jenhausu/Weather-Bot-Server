@@ -28,6 +28,10 @@ class Subscribe_Table < ActiveRecord::Base
     end
 end
 
+class Warning_Table < ActiveRecord::Base
+    self.table_name = "warning_table"
+end
+
 class Language < ActiveRecord::Base
     self.table_name = "language_table"
     def choice
