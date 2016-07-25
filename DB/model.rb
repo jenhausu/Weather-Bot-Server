@@ -141,7 +141,7 @@ class FetchData_Model
 
             return a
         elsif dataTitle == "warning"
-
+            return html_doc.xpath("//text()")
         end
     end
 end
