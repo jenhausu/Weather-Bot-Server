@@ -15,22 +15,22 @@ class Model
 
 
     def subscribe_add user, location
-        s = SubscribeClass.new
+        s = Subscribe_Table.new
         s.add(user, location)
     end
 
     def subscribed_show user
-        s = SubscribeClass.new
+        s = Subscribe_Table.new
         return s.read(user)
     end
 
     def unsubscribe user, location
-        s = SubscribeClass.new
+        s = Subscribe_Table.new
         s.delete(user, location)
     end
 
     def subscribe_ShowAllUser
-        s = SubscribeClass.new
+        s = Subscribe_Table.new
         all = s.read_all
         a = []
 

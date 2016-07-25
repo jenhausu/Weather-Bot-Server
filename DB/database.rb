@@ -29,25 +29,25 @@ class Language < ActiveRecord::Base
     end
 end
 
-class SubscribeClass < ActiveRecord::Base
+class Subscribe_Table < ActiveRecord::Base
     self.table_name = "subscribe_table"
     def add user, location
-        s = SubscribeClass.new(user: user, location: location)
+        s = Subscribe_Table.new(user: user, location: location)
         s.save!
     end
 
     def read user
-        s = SubscribeClass.where(user: user)
+        s = Subscribe_Table.where(user: user)
         return s
     end
 
     def read_all
-        s = SubscribeClass.all
+        s = Subscribe_Table.all
         return s
     end
 
     def delete user, location
-        s = SubscribeClass.find_by(user: user, location: location)
+        s = Subscribe_Table.find_by(user: user, location: location)
         s.destroy
     end
 end
