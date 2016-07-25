@@ -64,6 +64,10 @@ class Subscribe_Model
     end
 end
 
+class Warning_Model
+    
+end
+
 class FetchData_Model
     def fetchNewData datatype
         f = FetchData_Model.new
