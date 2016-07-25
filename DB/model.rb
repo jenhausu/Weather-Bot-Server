@@ -2,12 +2,6 @@ require './DB/database.rb'
 
 
 class Model
-    def fetchNewData datatype
-        f = FetchData_Model.new
-        a = f.nokogiri(f.rss, "weather", datatype)
-        return a
-    end
-
     def changeLanguage language
         l = Language.new
         l.update(language)
@@ -58,9 +52,9 @@ class Subscribe_Model
     end
 
     def subscribed_push user
-        m = Model.new
-        l = m.fetchNewData("location")
-        d = m.fetchNewData("degrees")
+        f = FetchData_Model.new
+        l = f.fetchNewData("location")
+        d = f.fetchNewData("degrees")
 
         s = Subscribe_Model.new.subscribed_show(user)
 
@@ -77,7 +71,13 @@ class Subscribe_Model
     end
 end
 
-class FetchDataClass
+class FetchData_Model
+    def fetchNewData datatype
+        f = FetchData_Model.new
+        a = f.nokogiri(f.rss, "weather", datatype)
+        return a
+    end
+
     def languageChoice
         lan = Language.new
         case lan.choice
@@ -92,7 +92,7 @@ class FetchDataClass
     end
 
     def rss
-        f = FetchDataClass.new
+        f = FetchData_Model.new
         url = f.languageChoice
         rss = SimpleRSS.parse open url
         return rss.items.first.description

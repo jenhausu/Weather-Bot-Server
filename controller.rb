@@ -5,6 +5,7 @@ require './DB/model.rb'
 
 token = '240556961:AAEP-A47vhju8Vy3P7C7vZZTdGseOpdmY9I'
 
+f = FetchData_Model.new
 m = Model.new
 s = Subscribe_Model.new
 scheduler = Rufus::Scheduler.new
@@ -39,8 +40,8 @@ Telegram::Bot::Client.run(token) do |bot|
 
             bot.api.send_message(chat_id: message.chat.id, text: t)
         when '/current_weather'
-            location = m.fetchNewData("location")
-            degrees = m.fetchNewData("degrees")
+            location = f.fetchNewData("location")
+            degrees = f.fetchNewData("degrees")
             t = ""
 
             location.count.times { |index|
@@ -49,7 +50,7 @@ Telegram::Bot::Client.run(token) do |bot|
             bot.api.send_message(chat_id: message.chat.id, text: t)
         when '/subscribe'
             kb = []
-            location = m.fetchNewData("location")
+            location = f.fetchNewData("location")
             c = ["Hong Kong Observatory", "King's Park", "Wong Chuk Hang", "Ta Kwu Ling", "Lau Fau Shan", "Tai Po", "Sha Tin", "Tuen Mun", "Tseung Kwan O", "Sai Kung",
                             "Cheung Chau", "Chek Lap Kok", "Tsing Yi", "Shek Kong", "Tsuen Wan Ho Koon", "Tsuen Wan Shing Mun Valley", "Hong Kong Park", "Shau Kei Wan",
                              "Kowloon City", "Happy Valley", "Wong Tai Sin", "Stanley", "Kwun Tong", "Sham Shui Po", "Kai Tak Runway Park", "Yuen Long Park"]
