@@ -56,7 +56,7 @@ Telegram::Bot::Client.run(token) do |bot|
             a.each { |item|
                 bot.api.send_message(chat_id: message.chat.id, text: item)
             }
-        when '/subscribe'
+        when '/subscribe_weather'
             kb = []
             location = f.fetchNewData("location")
             c = ["Hong Kong Observatory", "King's Park", "Wong Chuk Hang", "Ta Kwu Ling", "Lau Fau Shan", "Tai Po", "Sha Tin", "Tuen Mun", "Tseung Kwan O", "Sai Kung",
@@ -69,7 +69,7 @@ Telegram::Bot::Client.run(token) do |bot|
 
             markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb, one_time_keyboard: true)
             bot.api.send_message(chat_id: message.chat.id, text: "Here are " + location.count.to_s + " locations you can subscribe.", reply_markup: markup)
-        when '/unsubscribe'
+        when '/unsubscribe_weather'
             kb = []
             location = s.subscribed_show(message.chat.id)
 
