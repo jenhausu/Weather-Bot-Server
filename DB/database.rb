@@ -43,6 +43,9 @@ end
 
 class ObserveWarning_Table < ActiveRecord::Base
     self.table_name = "observeWarning_table"
+    def read
+        return ObserveWarning_Table.all
+    end
 end
 
 class Language < ActiveRecord::Base
