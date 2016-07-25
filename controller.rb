@@ -8,6 +8,7 @@ token = '240556961:AAEP-A47vhju8Vy3P7C7vZZTdGseOpdmY9I'
 f = FetchData_Model.new
 s = Subscribe_Model.new
 l = Language_Model.new
+w = Warning_Model.new
 
 scheduler = Rufus::Scheduler.new
 
@@ -33,6 +34,7 @@ Telegram::Bot::Client.run(token) do |bot|
         when '/start'
             t = "Here are the commands you can use:\n"
             t += "/current_weather - Watch the current weather status.\n"
+            t += "/current_warning - Look at the weather warning.\n"
             t += "/subscribe - subscribe weather\n"
             t += "/unsubscribe -  unsubscribe weather\n"
             t += "/繁體中文 -  轉換資料的語言為繁體中文\n"
@@ -41,14 +43,19 @@ Telegram::Bot::Client.run(token) do |bot|
 
             bot.api.send_message(chat_id: message.chat.id, text: t)
         when '/current_weather'
-            location = f.fetchNewData("location")
-            degrees = f.fetchNewData("degrees")
+            location = f.fetchNewData("weather", "location")
+            degrees = f.fetchNewData("weather", "degrees")
             t = ""
 
             location.count.times { |index|
                 t += location[index] + ": " + degrees[index] + " ˚C\n"
             }
             bot.api.send_message(chat_id: message.chat.id, text: t)
+        when '/current_warning'
+            a = w.fetchWarning
+            a.each { |item|
+                bot.api.send_message(chat_id: message.chat.id, text: item)
+            }
         when '/subscribe'
             kb = []
             location = f.fetchNewData("location")

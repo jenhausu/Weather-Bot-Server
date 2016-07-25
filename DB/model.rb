@@ -46,8 +46,9 @@ class Subscribe_Model
 
     def subscribed_push user
         f = FetchData_Model.new
-        l = f.fetchNewData("location")
-        d = f.fetchNewData("degrees")
+        l = f.fetchNewData("weather", "location")
+        d = f.fetchNewData("weather", "degrees")
+
 
         s = Subscribe_Model.new.subscribed_show(user)
 
@@ -64,36 +65,69 @@ class Subscribe_Model
     end
 end
 
-class FetchData_Model
-    def fetchNewData datatype
+class Warning_Model
+    def warning_subscribe user
+        w = Warning_Table.new
+        w.add(user)
+    end
+
+    def warning_unsubscribe user
+        w = Warning_Table.new
+        w.delete(user)
+    end
+
+    def fetchWarning
         f = FetchData_Model.new
-        a = f.nokogiri(f.rss, "weather", datatype)
+        a = f.nokogiri("warning", "not need")
+
+    return a
+end
+
+end
+
+class FetchData_Model
+    def fetchNewData datatype1, datatype2
+        f = FetchData_Model.new
+        a = f.nokogiri(datatype1, datatype2)
         return a
     end
 
-    def languageChoice
+    def languageChoice dataTitle
         lan = Language.new
-        case lan.choice
-        when "English"
-            url = 'http://rss.weather.gov.hk/rss/CurrentWeather.xml'
-        when "繁體中文"
-            url = 'http://rss.weather.gov.hk/rss/CurrentWeather_uc.xml'
-        when "简体中文"
-            url = 'http://gbrss.weather.gov.hk/rss/CurrentWeather_uc.xml'
+        if dataTitle == "weather"
+            case lan.choice
+            when "English"
+                url = 'http://rss.weather.gov.hk/rss/CurrentWeather.xml'
+            when "繁體中文"
+                url = 'http://rss.weather.gov.hk/rss/CurrentWeather_uc.xml'
+            when "简体中文"
+                url = 'http://gbrss.weather.gov.hk/rss/CurrentWeather_uc.xml'
+            end
+        elsif dataTitle == "warning"
+            case lan.choice
+            when "English"
+                url = 'http://rss.weather.gov.hk/rss/WeatherWarningBulletin.xml'
+            when "繁體中文"
+                url = 'http://rss.weather.gov.hk/rss/WeatherWarningBulletin_uc.xml'
+            when "简体中文"
+                url = 'http://gbrss.weather.gov.hk/rss/WeatherWarningBulletin_uc.xml'
+            end
         end
+
         return url
     end
 
-    def rss
+    def rss dataTitle
         f = FetchData_Model.new
-        url = f.languageChoice
+        url = f.languageChoice(dataTitle)
         rss = SimpleRSS.parse open url
         return rss.items.first.description
     end
 
-    def nokogiri description, dataTitle, dataType
+    def nokogiri dataTitle, dataType
+        html_doc = Nokogiri::HTML(FetchData_Model.new.rss(dataTitle))
+
         if dataTitle == "weather"
-            html_doc = Nokogiri::HTML(description)
             dataQuantity = ((html_doc.xpath("//table[1]/tr/td").count)/2)
             a = []
 
@@ -115,7 +149,7 @@ class FetchData_Model
 
             return a
         elsif dataTitle == "warning"
-
+            return html_doc.xpath("//text()")
         end
     end
 end

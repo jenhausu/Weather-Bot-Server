@@ -10,4 +10,8 @@ ActiveRecord::Schema.define do
     create_table :language_table do |table|
         table.string "language"
     end
+
+    create_table :warning_table do |table|
+        table.string "user"
+    end
 end
