@@ -24,7 +24,7 @@ Telegram::Bot::Client.run(token) do |bot|
                 t += key.to_s + ": " + value.to_s + " ˚C\n"
             }
             bot.api.send_message(chat_id: user_id, text: t)
-        }
+    }
     end
 
   bot.listen do |message|
@@ -89,7 +89,7 @@ Telegram::Bot::Client.run(token) do |bot|
             l.changeLanguage("English")
             bot.api.send_message(chat_id: message.chat.id, text: "Already change the data's language to English.")
         else
-            bot.api.send_message(chat_id: message.chat.id, text: "I don't understand what \"" + message.text +  "\" mean ......")
+            bot.api.send_message(chat_id: message.chat.id, text: "I don't understand what \"" + message.text.to_s +  "\" mean ......")
         end
     when Telegram::Bot::Types::CallbackQuery
         scheduler.pause
