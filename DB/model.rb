@@ -1,13 +1,6 @@
 require './DB/database.rb'
 
 
-class Language_Model
-    def changeLanguage language
-        l = Language.new
-        l.update(language)
-    end
-end
-
 class Subscribe_Model
     def subscribe_add user, location
         s = Subscribe_Table.new
@@ -124,5 +117,12 @@ class FetchData_Model
         elsif dataTitle == "warning"
 
         end
+    end
+end
+
+class Language_Model
+    def changeLanguage language
+        l = Language.new
+        l.update(language)
     end
 end
