@@ -148,7 +148,8 @@ class FetchData_Model
     end
 
     def nokogiri dataTitle, dataType
-        html_doc = Nokogiri::HTML(FetchData_Model.new.rss(dataTitle))
+        d = FetchData_Model.new.rss(dataTitle)
+        html_doc = Nokogiri::HTML(d)
 
         if dataTitle == "weather"
             dataQuantity = ((html_doc.xpath("//table[1]/tr/td").count)/2)
