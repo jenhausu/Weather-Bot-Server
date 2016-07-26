@@ -72,7 +72,7 @@ end
 
 class Language_Table < ActiveRecord::Base
     self.table_name = "language_table"
-    def choice user_id
+    def read user_id
         l = Language_Table.find_by(user: user_id)
         if l
             return l.language
