@@ -81,15 +81,14 @@ class Language < ActiveRecord::Base
         end
     end
 
-    def update c
-        l = Language.first
+    def update user_id, language
+        l = Language.find_by(user: user_id)
         if l
-            l.language = c
+            l.language = language
             l.save!
         else
-            l = Language.new(language: "#{c}")
+            l = Language.new(user: user_id, language: "#{language}")
             l.save!
         end
-
     end
 end
