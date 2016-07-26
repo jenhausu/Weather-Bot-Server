@@ -86,13 +86,16 @@ class Warning_Model
     def warning_change
         w = Warning_Model.new
         o = ObserveWarning_Table.new
-        
-        t = w.fetchWarning
-        if t.last.to_s == o.read[0].dispatche_time.to_s
-            return false
-        else
-            o.update(t.last)
-            return true
+
+        a = w.warning_subscribed_user
+        if a.count > 0
+            t = w.fetchWarning
+            if t.last.to_s == o.read[0].dispatche_time.to_s
+                return false
+            else
+                o.update(t.last)
+                return true
+            end
         end
     end
 
