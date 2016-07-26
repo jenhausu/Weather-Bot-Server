@@ -37,7 +37,10 @@ class Warning_Table < ActiveRecord::Base
 
     def delete user
         w = Warning_Table.find_by(user: user)
-        w.destroy
+
+        if w
+            w.destroy
+        end
     end
     
     def read
