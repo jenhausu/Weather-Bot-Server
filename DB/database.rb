@@ -72,8 +72,8 @@ end
 
 class Language < ActiveRecord::Base
     self.table_name = "language_table"
-    def choice
-        l = Language.first
+    def choice user_id
+        l = Language.find_by(user: user_id)
         if l
             return l.language
         else
