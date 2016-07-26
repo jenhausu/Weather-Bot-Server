@@ -173,7 +173,17 @@ class FetchData_Model
 
             return a
         elsif dataTitle == "warning"
-            return html_doc.xpath("//text()")
+            lan = Language.new
+            case lan.choice
+            when "English"
+                return html_doc.xpath("//text()")
+            when "繁體中文"
+                html_doc = Nokogiri::HTML(d, nil, "utf-8")
+                return html_doc.xpath("//text()")
+            when "简体中文"
+                html_doc = Nokogiri::HTML(d, nil, "utf-8")
+                return html_doc.xpath("//text()")
+            end
         end
     end
 end
