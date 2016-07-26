@@ -193,7 +193,7 @@ end
 
 class Language_Model
     def changeLanguage language
-        l = Language.new
+        l = Language_Table.new
         l.update(language)
     end
 end

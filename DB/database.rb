@@ -70,10 +70,10 @@ class ObserveWarning_Table < ActiveRecord::Base
     end
 end
 
-class Language < ActiveRecord::Base
+class Language_Table < ActiveRecord::Base
     self.table_name = "language_table"
     def choice user_id
-        l = Language.find_by(user: user_id)
+        l = Language_Table.find_by(user: user_id)
         if l
             return l.language
         else
@@ -82,12 +82,12 @@ class Language < ActiveRecord::Base
     end
 
     def update user_id, language
-        l = Language.find_by(user: user_id)
+        l = Language_Table.find_by(user: user_id)
         if l
             l.language = language
             l.save!
         else
-            l = Language.new(user: user_id, language: "#{language}")
+            l = Language_Table.new(user: user_id, language: "#{language}")
             l.save!
         end
     end
