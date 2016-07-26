@@ -148,7 +148,8 @@ class FetchData_Model
     end
 
     def nokogiri dataTitle, dataType
-        html_doc = Nokogiri::HTML(FetchData_Model.new.rss(dataTitle))
+        d = FetchData_Model.new.rss(dataTitle)
+        html_doc = Nokogiri::HTML(d)
 
         if dataTitle == "weather"
             dataQuantity = ((html_doc.xpath("//table[1]/tr/td").count)/2)
@@ -172,7 +173,17 @@ class FetchData_Model
 
             return a
         elsif dataTitle == "warning"
-            return html_doc.xpath("//text()")
+            lan = Language.new
+            case lan.choice
+            when "English"
+                return html_doc.xpath("//text()")
+            when "繁體中文"
+                html_doc = Nokogiri::HTML(d, nil, "utf-8")
+                return html_doc.xpath("//text()")
+            when "简体中文"
+                html_doc = Nokogiri::HTML(d, nil, "utf-8")
+                return html_doc.xpath("//text()")
+            end
         end
     end
 end
