@@ -90,7 +90,7 @@ Telegram::Bot::Client.run(token) do |bot|
             location = s.subscribed_show(message.chat.id)
 
             location.each_with_index { |item, index|
-                kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: (index + 1).to_s + ". " + location[index].location, callback_data: "u" + location[index].location)
+                kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: (index + 1).to_s + ". " + location[index], callback_data: "u" + location[index])
             }
 
             markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb, one_time_keyboard: true)
