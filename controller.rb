@@ -84,7 +84,7 @@ Telegram::Bot::Client.run(token) do |bot|
             }
 
             markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb, one_time_keyboard: true)
-            bot.api.send_message(chat_id: message.chat.id, text: "Here are " + location.count.to_s + " locations you can subscribe.", reply_markup: markup)
+            bot.api.send_message(chat_id: message.chat.id, text: "Here are the locations you can subscribe.", reply_markup: markup)
         when '/weather_unsubscribe'
             kb = []
             location = s.subscribed_show(message.chat.id)
