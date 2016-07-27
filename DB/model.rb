@@ -213,3 +213,10 @@ class Language_Model
         return l.read(user)
     end
 end
+
+class Translation_Model
+    def translate text, from, to
+        t = Translation_Table.new
+        return t.traslate(t.identifyIndex(text, from), to)
+    end
+end
