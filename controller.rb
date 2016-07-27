@@ -59,7 +59,11 @@ Telegram::Bot::Client.run(token) do |bot|
             t = ""
 
             location.count.times { |index|
-                t += location[index] + ": " + degrees[index] + " ˚C\n"
+                if index < 26
+                    t += location[index] + ": " + degrees[index] + " ˚C\n"
+                else
+                    break
+                end
             }
             bot.api.send_message(chat_id: message.chat.id, text: t)
         when '/current_warning'
@@ -72,7 +76,11 @@ Telegram::Bot::Client.run(token) do |bot|
             location = s.subscribe_choice
 
             location.each_with_index { |item, index|
-                kb << Telegram::Bot::Types::InlineKeyboardButton.new(text:(index + 1).to_s + ". " + item, callback_data: "s" + location[index])
+                if index < 26
+                    kb << Telegram::Bot::Types::InlineKeyboardButton.new(text:(index + 1).to_s + ". " + item, callback_data: "s" + location[index])
+                else
+                    break
+                end
             }
 
             markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb, one_time_keyboard: true)
