@@ -84,20 +84,28 @@ class Warning_Model
     end
 
     def warning_change
-        w = Warning_Model.new
         o = ObserveWarning_Table.new
 
-        a = w.warning_subscribed_user
-        if a.count > 0
-            a.each_with_index { |item, index|
-                t = w.fetchWarning(item)
-                if t.last.to_s == o.read[0].dispatche_time.to_s
-                    return false
+        rss = SimpleRSS.parse open 'http://rss.weather.gov.hk/rss/WeatherWarningBulletin.xml'
+        d = rss.items.first.description
+        html_doc = Nokogiri::HTML(d)
+        t = html_doc.xpath("//text()")
+
+        if t.last.to_s.length == 62
+
+            if t.last.to_s[39..61] == o.read[0].dispatche_time.to_s
+                return false
                 else
-                    o.update(t.last)
-                    return true
-                end
-            }
+                o.update(t.last.to_s[39..61])
+                return true
+            end
+            else
+            if t.last.to_s[34..56] == o.read[0].dispatche_time.to_s
+                return false
+                else
+                o.update(t.last.to_s[34..56])
+                return true
+            end
         end
     end
 
