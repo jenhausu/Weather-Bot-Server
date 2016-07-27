@@ -92,3 +92,18 @@ class Language_Table < ActiveRecord::Base
         end
     end
 end
+
+class Translation_Table < ActiveRecord::Base
+    self.table_name = "translation_table"
+    def traslate index, language
+        t = Translation_Table.find_by(id: index)
+        case language
+        when "English"
+            return t.english
+        when "繁體中文"
+            return t.traditional_chinese
+        when "简体中文"
+            return t.simplified_chinese
+        end
+    end
+end
