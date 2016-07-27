@@ -4,9 +4,10 @@ require './DB/database.rb'
 class Subscribe_Model
     def subscribe_add user, location
         s = Subscribe_Table.new
+        
         u = s.read(user)
         u.each_with_index { |item, index|
-            if condition
+            if  && (index == u.count - 1)
                 s.add(user, location)
             end
         }
