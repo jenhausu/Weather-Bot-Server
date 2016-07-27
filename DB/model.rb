@@ -46,8 +46,8 @@ class Subscribe_Model
 
     def subscribed_push user
         f = FetchData_Model.new
-        l = f.fetchNewData("weather", "location")
-        d = f.fetchNewData("weather", "degrees")
+        l = f.fetchNewData(user, "weather", "location")
+        d = f.fetchNewData(user, "weather", "degrees")
 
 
         s = Subscribe_Model.new.subscribed_show(user)
@@ -76,26 +76,28 @@ class Warning_Model
         w.delete(user)
     end
 
-    def fetchWarning
+    def fetchWarning user_id
         f = FetchData_Model.new
-        a = f.nokogiri("warning", "not need")
+        a = f.nokogiri(user_id, "warning", "not need")
 
         return a
     end
-    
+
     def warning_change
         w = Warning_Model.new
         o = ObserveWarning_Table.new
 
         a = w.warning_subscribed_user
         if a.count > 0
-            t = w.fetchWarning
-            if t.last.to_s == o.read[0].dispatche_time.to_s
-                return false
-            else
-                o.update(t.last)
-                return true
-            end
+            a.each_with_index { |item, index|
+                t = w.fetchWarning(item)
+                if t.last.to_s == o.read[0].dispatche_time.to_s
+                    return false
+                else
+                    o.update(t.last)
+                    return true
+                end
+            }
         end
     end
 
@@ -112,16 +114,17 @@ class Warning_Model
 end
 
 class FetchData_Model
-    def fetchNewData datatype1, datatype2
+    def fetchNewData user_id, datatype1, datatype2
         f = FetchData_Model.new
-        a = f.nokogiri(datatype1, datatype2)
+        a = f.nokogiri(user_id, datatype1, datatype2)
         return a
     end
 
-    def languageChoice dataTitle
-        lan = Language.new
+    def languageChoice user_id, dataTitle
+        l = Language_Model.new
+        language = l.choice(user_id)
         if dataTitle == "weather"
-            case lan.choice
+            case language
             when "English"
                 url = 'http://rss.weather.gov.hk/rss/CurrentWeather.xml'
             when "繁體中文"
@@ -130,7 +133,7 @@ class FetchData_Model
                 url = 'http://gbrss.weather.gov.hk/rss/CurrentWeather_uc.xml'
             end
         elsif dataTitle == "warning"
-            case lan.choice
+            case language
             when "English"
                 url = 'http://rss.weather.gov.hk/rss/WeatherWarningBulletin.xml'
             when "繁體中文"
@@ -143,15 +146,15 @@ class FetchData_Model
         return url
     end
 
-    def rss dataTitle
+    def rss user_id, dataTitle
         f = FetchData_Model.new
-        url = f.languageChoice(dataTitle)
+        url = f.languageChoice(user_id, dataTitle)
         rss = SimpleRSS.parse open url
         return rss.items.first.description
     end
 
-    def nokogiri dataTitle, dataType
-        d = FetchData_Model.new.rss(dataTitle)
+    def nokogiri user_id, dataTitle, dataType
+        d = FetchData_Model.new.rss(user_id, dataTitle)
         html_doc = Nokogiri::HTML(d)
 
         if dataTitle == "weather"
@@ -176,8 +179,8 @@ class FetchData_Model
 
             return a
         elsif dataTitle == "warning"
-            lan = Language.new
-            case lan.choice
+            l = Language_Model.new
+            case l.choice(user_id)
             when "English"
                 return html_doc.xpath("//text()")
             when "繁體中文"
@@ -192,8 +195,13 @@ class FetchData_Model
 end
 
 class Language_Model
-    def changeLanguage language
+    def changeLanguage user, language
         l = Language_Table.new
-        l.update(language)
+        l.update(user, language)
+    end
+
+    def choice user
+        l = Language_Table.new
+        return l.read(user)
     end
 end

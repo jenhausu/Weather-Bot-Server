@@ -28,7 +28,7 @@ Telegram::Bot::Client.run(token) do |bot|
         if w.warning_change
             u = w.warning_subscribed_user
             u.each { |user_id|
-                a = w.fetchWarning
+                a = w.fetchWarning(user_id)
                 a.each { |item|
                     bot.api.send_message(chat_id: user_id, text: item)
                 }
@@ -54,8 +54,8 @@ Telegram::Bot::Client.run(token) do |bot|
 
             bot.api.send_message(chat_id: message.chat.id, text: t)
         when '/current_weather'
-            location = f.fetchNewData("weather", "location")
-            degrees = f.fetchNewData("weather", "degrees")
+            location = f.fetchNewData(message.chat.id, "weather", "location")
+            degrees = f.fetchNewData(message.chat.id, "weather", "degrees")
             t = ""
 
             location.count.times { |index|
@@ -63,13 +63,13 @@ Telegram::Bot::Client.run(token) do |bot|
             }
             bot.api.send_message(chat_id: message.chat.id, text: t)
         when '/current_warning'
-            a = w.fetchWarning
+            a = w.fetchWarning(message.chat.id)
             a.each { |item|
                 bot.api.send_message(chat_id: message.chat.id, text: item)
             }
         when '/weather_subscribe'
             kb = []
-            location = s.subscribe_choice
+            location = f.fetchNewData(message.chat.id, "weather", "location")
 
             location.each_with_index { |item, index|
                 kb << Telegram::Bot::Types::InlineKeyboardButton.new(text:(index + 1).to_s + ". " + item, callback_data: "s" + location[index])
@@ -94,13 +94,13 @@ Telegram::Bot::Client.run(token) do |bot|
             w.warning_unsubscribe(message.chat.id)
             bot.api.send_message(chat_id: message.chat.id, text: "Unubscribe warning successfuly")
         when '/繁體中文'
-            l.changeLanguage("繁體中文")
+            l.changeLanguage(message.chat.id, "繁體中文")
             bot.api.send_message(chat_id: message.chat.id, text: "已經將資料切換成繁體中文。")
         when '/简体中文'
-            l.changeLanguage("简体中文")
+            l.changeLanguage(message.chat.id, "简体中文")
             bot.api.send_message(chat_id: message.chat.id, text: "已经将资料切换成简体中文。")
         when '/English'
-            l.changeLanguage("English")
+            l.changeLanguage(message.chat.id, "English")
             bot.api.send_message(chat_id: message.chat.id, text: "Already change the data's language to English.")
         else
             bot.api.send_message(chat_id: message.chat.id, text: "I don't understand what \"" + message.text.to_s +  "\" mean ......")
