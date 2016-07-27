@@ -70,10 +70,10 @@ class ObserveWarning_Table < ActiveRecord::Base
     end
 end
 
-class Language < ActiveRecord::Base
+class Language_Table < ActiveRecord::Base
     self.table_name = "language_table"
-    def choice
-        l = Language.first
+    def read user_id
+        l = Language_Table.find_by(user: user_id)
         if l
             return l.language
         else
@@ -81,15 +81,49 @@ class Language < ActiveRecord::Base
         end
     end
 
-    def update c
-        l = Language.first
+    def update user_id, language
+        l = Language_Table.find_by(user: user_id)
         if l
-            l.language = c
+            l.language = language
             l.save!
         else
-            l = Language.new(language: "#{c}")
+            l = Language_Table.new(user: user_id, language: "#{language}")
             l.save!
         end
+    end
+end
 
+class Translation_Table < ActiveRecord::Base
+    self.table_name = "translation_table"
+    def traslate index, language
+        t = Translation_Table.find_by(id: index)
+        case language
+        when "English"
+            return t.english
+        when "繁體中文"
+            return t.traditional_chinese
+        when "简体中文"
+            return t.simplified_chinese
+        end
+    end
+
+    def identifyIndex location, language
+        t = Translation_Table.all
+        t.each_with_index { |item, index|
+            case language
+            when "English"
+                if t[index].english == location
+                    return index + 1
+                end
+            when "繁體中文"
+                if t[index].traditional_chinese == location
+                    return index + 1
+                end
+            when "简体中文"
+                if t[index].simplified_chinese == location
+                    return index + 1
+                end
+            end
+        }
     end
 end
