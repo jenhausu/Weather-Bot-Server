@@ -9,7 +9,26 @@ class Subscribe_Model
 
     def subscribed_show user
         s = Subscribe_Table.new
-        return s.read(user)
+        t = Translation_Model.new
+
+        subscribed = s.read(user)
+        a = []
+
+        subscribed.each_with_index { |item, index|
+            l = Language_Model.new
+            language = l.choice(user)
+
+            case language
+            when "English"
+                a << t.translate(subscribed[index].location, "English", "English")
+            when "繁體中文"
+                a << t.translate(subscribed[index].location, "English", "繁體中文")
+            when "简体中文"
+                a << t.translate(subscribed[index].location, "English", "简体中文")
+            end
+        }
+
+        return a
     end
 
     def unsubscribe user, location
@@ -49,18 +68,18 @@ class Subscribe_Model
         l = f.fetchNewData(user, "weather", "location")
         d = f.fetchNewData(user, "weather", "degrees")
 
-
-        s = Subscribe_Model.new.subscribed_show(user)
-
         h = {}
         l.each_with_index { |item, index|
             h[l[index]] = d[index]
         }
 
+        s = Subscribe_Model.new.subscribed_show(user)
+
         a = {}
         s.each_with_index { |item, index|
-            a[s[index].location] = h[s[index].location]
+            a[item] = h[item]
         }
+
         return a
     end
 end
@@ -211,5 +230,12 @@ class Language_Model
     def choice user
         l = Language_Table.new
         return l.read(user)
+    end
+end
+
+class Translation_Model
+    def translate text, from, to
+        t = Translation_Table.new
+        return t.traslate(t.identifyIndex(text, from), to)
     end
 end

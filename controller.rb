@@ -74,10 +74,13 @@ Telegram::Bot::Client.run(token) do |bot|
         when '/weather_subscribe'
             kb = []
             location = f.fetchNewData(message.chat.id, "weather", "location")
+            c = ["Hong Kong Observatory", "King's Park", "Wong Chuk Hang", "Ta Kwu Ling", "Lau Fau Shan", "Tai Po", "Sha Tin", "Tuen Mun", "Tseung Kwan O", "Sai Kung",
+                            "Cheung Chau", "Chek Lap Kok", "Tsing Yi", "Shek Kong", "Tsuen Wan Ho Koon", "Tsuen Wan Shing Mun Valley", "Hong Kong Park", "Shau Kei Wan",
+                             "Kowloon City", "Happy Valley", "Wong Tai Sin", "Stanley", "Kwun Tong", "Sham Shui Po", "Kai Tak Runway Park", "Yuen Long Park"]
 
             location.each_with_index { |item, index|
                 if index < 26
-                    kb << Telegram::Bot::Types::InlineKeyboardButton.new(text:(index + 1).to_s + ". " + item, callback_data: "s" + location[index])
+                    kb << Telegram::Bot::Types::InlineKeyboardButton.new(text:(index + 1).to_s + ". " + item, callback_data: "s" + c[index])
                 else
                     break
                 end
@@ -87,14 +90,28 @@ Telegram::Bot::Client.run(token) do |bot|
             bot.api.send_message(chat_id: message.chat.id, text: "Here are the locations you can subscribe.", reply_markup: markup)
         when '/weather_unsubscribe'
             kb = []
-            location = s.subscribed_show(message.chat.id)
+            
+            t = Translation_Model.new
+            c = []
+            subscribed_location = s.subscribed_show(message.chat.id)
+            subscribed_location.each { |item|
+                language = l.choice(message.chat.id)
+                case language
+                when "English"
+                    c << t.translate(item, "English", "English")
+                when "繁體中文"
+                    c << t.translate(item, "繁體中文", "English")
+                when "简体中文"
+                    c << t.translate(item, "简体中文", "English")
+                end
+            }
 
-            location.each_with_index { |item, index|
-                kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: (index + 1).to_s + ". " + location[index].location, callback_data: "u" + location[index].location)
+            subscribed_location.each_with_index { |item, index|
+                kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: (index + 1).to_s + ". " + subscribed_location[index], callback_data: "u" + c[index])
             }
 
             markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb, one_time_keyboard: true)
-            bot.api.send_message(chat_id: message.chat.id, text: "Here are " + location.count.to_s + " locations you have subscribe.", reply_markup: markup)
+            bot.api.send_message(chat_id: message.chat.id, text: "Here are " + subscribed_location.count.to_s + " locations you have subscribe.", reply_markup: markup)
         when '/warning_subscribe'
             w.warning_subscribe(message.chat.id)
             bot.api.send_message(chat_id: message.chat.id, text: "Subscribe warning successfuly")

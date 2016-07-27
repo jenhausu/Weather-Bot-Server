@@ -92,3 +92,38 @@ class Language_Table < ActiveRecord::Base
         end
     end
 end
+
+class Translation_Table < ActiveRecord::Base
+    self.table_name = "translation_table"
+    def traslate index, language
+        t = Translation_Table.find_by(id: index)
+        case language
+        when "English"
+            return t.english
+        when "繁體中文"
+            return t.traditional_chinese
+        when "简体中文"
+            return t.simplified_chinese
+        end
+    end
+
+    def identifyIndex location, language
+        t = Translation_Table.all
+        t.each_with_index { |item, index|
+            case language
+            when "English"
+                if t[index].english == location
+                    return index + 1
+                end
+            when "繁體中文"
+                if t[index].traditional_chinese == location
+                    return index + 1
+                end
+            when "简体中文"
+                if t[index].simplified_chinese == location
+                    return index + 1
+                end
+            end
+        }
+    end
+end
